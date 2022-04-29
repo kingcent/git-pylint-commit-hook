@@ -293,7 +293,10 @@ def check_repo(
             # Verify the score
             score = _parse_score(out)
             ignored = _check_ignore(out)
-            if ignored or score >= float(limit):
+            if ('--fail-on' in pylint_params or '--fail-under' in pylint_params) and  proc.returncode:
+                status = 'FAILED'
+                all_filed_passed = False
+            elif ignored or score >= float(limit):
                 status = 'PASSED'
             elif not out and not proc.returncode:
                 # pylint produced no output but also no errors
